@@ -37,7 +37,7 @@ def button_click(update: Update, context: CallbackContext) -> None:
         food = random.choice(food_suggestions)
         query.edit_message_text(f"How about trying {food}?")
     elif query.data == 'place':
-        place_suggestions = ["Marina One", "Food Garden", "Lau Pa Sat", "Hong Leong Bldg"]
+        place_suggestions = ["Marina One", "Food Garden", "Lau Pa Sat", "Hong Leong Bldg", "L2 Kopitiam"]
 
         place = random.choice([place for place in place_suggestions if place != last_suggested_place[0]])
 
