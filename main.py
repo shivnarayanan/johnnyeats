@@ -1,8 +1,14 @@
 import random
+import os
+
+from dotenv import load_dotenv
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler
 
-TOKEN = '6723588023:AAEStyU0EDieKtpeMaHzQTN5L23Gbc_ZoTs'
+load_dotenv(override=True)
+
+TOKEN = os.environ.get('BOT_TOKEN')
+
 last_suggested_place = [None]
 
 def start(update: Update, context: CallbackContext) -> None:
