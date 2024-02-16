@@ -28,7 +28,7 @@ The bot retrieves data from a [Heroku Postgres](https://devcenter.heroku.com/art
 
 The database is updated daily by the **update.py** script, which runs on [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler). It retrieves data from [here](https://docs.google.com/spreadsheets/d/10KDw1cMOw4NaSXAJS8QObgpUnsfbWdj72ERZagWjoEs/edit#gid=1593634417).
 
-## Deploymentgh
+## Deployment
 
 The staging and production bots are deployed on Heroku. Automated deployment is triggered when changes are merged into the **staging** or **main** branches.
 
