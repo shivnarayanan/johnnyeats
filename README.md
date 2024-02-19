@@ -1,8 +1,12 @@
+# JohnnyEats
+
+JohnnyEats is a Telegram bot that suggests eating spots near MBFC.
+
 ## Local Development
 
 Follow these steps and set up your development environment:
 
-1. Create a Telegram bot for local development:
+1. Create a Telegram bot for local development and testing:
     - Search for Telegram's special bot called @BotFather
     - Follow the instructions to create a new bot by typing **`/newbot`** and providing a name and username. 
     - BotFather will provide you with a token to use for HTTP API access.
@@ -10,6 +14,7 @@ Follow these steps and set up your development environment:
 2. Clone GitHub Repository: 
     ```
     git clone https://github.com/shivnarayanan/johnnyeats.git
+    git checkout staging
     ```
 3. Create a **.env** file within the project directory 
 4. Add `BOT_TOKEN=XXX` to the file and replace `XXX` with the token from BotFather.
@@ -32,7 +37,7 @@ The database is updated daily by the **update.py** script, which runs on [Heroku
 
 The staging and production bots are deployed on Heroku. Automated deployment is triggered when changes are merged into the **staging** or **main** branches.
 
-- Merging into the **staging** branch deploy changes into the **STGJohnnyEats** staging bot.
+- Merging into the **staging** branch deploys changes into the **STGJohnnyEats** staging bot.
 - Merging into the **main** branch deploys changes into the **JohnnyEats** production bot.
 
 If you are interested in the deployment set-up, ask Shiv to add you as a collaborator to the application on Heroku.
