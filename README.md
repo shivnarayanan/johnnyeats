@@ -18,14 +18,15 @@ Follow these steps and set up your development environment:
     ```
 3. Create a **.env** file within the project directory 
 4. Add `BOT_TOKEN=XXX` to the file and replace `XXX` with the token from BotFather.
-5. Prepare your enviornment:
+5. Create a **.gitignore** file and add **.env** to it.
+6. Prepare your enviornment:
     ```
     conda create --name johnnyeats
     conda activate johnnyeats
     conda install pip
     pip install -r requirements.txt
     ```
-6. To test the bot, run `python3 main.py` and search for your bot on Telegram.
+7. To test the bot, run `python3 main.py` and search for your bot on Telegram.
 
 ## Food and Drinks Data
 
