@@ -12,15 +12,23 @@ TOKEN = os.environ.get('BOT_TOKEN')
 last_suggested_place = [None]
 
 def start(update: Update, context: CallbackContext) -> None:
-    keyboard = [
-        [InlineKeyboardButton("Food Suggestion", callback_data='food')],
-        [InlineKeyboardButton("Drink Suggestion", callback_data='food')],
-        [InlineKeyboardButton("Place Suggestion", callback_data='place')],
-    ]
-
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    update.message.reply_text('What suggestion would you like to receive from Johnny today?', reply_markup=reply_markup)
+    if update.callback_query:
+        query = update.callback_query
+        keyboard = [
+            [InlineKeyboardButton("Place Suggestion", callback_data='place')],
+            [InlineKeyboardButton("Food Suggestion", callback_data='-')],
+            [InlineKeyboardButton("Drink Suggestion", callback_data='-')],
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        query.message.edit_text('What suggestion would you like to receive from Johnny today?', reply_markup=reply_markup)
+    else:
+        keyboard = [
+            [InlineKeyboardButton("Place Suggestion", callback_data='place')],
+            [InlineKeyboardButton("Food Suggestion", callback_data='-')],
+            [InlineKeyboardButton("Drink Suggestion", callback_data='-')],
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        update.message.reply_text('What suggestion would you like to receive from Johnny today?', reply_markup=reply_markup)
 
 def button_click(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
@@ -36,6 +44,7 @@ def button_click(update: Update, context: CallbackContext) -> None:
 
         food = random.choice(food_suggestions)
         query.edit_message_text(f"How about trying {food}?")
+    
     elif query.data == 'place':
         place_suggestions = ["Marina One", "Food Garden", "Lau Pa Sat", "Hong Leong Bldg", "L2 Kopitiam"]
 
@@ -44,8 +53,8 @@ def button_click(update: Update, context: CallbackContext) -> None:
         last_suggested_place[0] = place 
 
         keyboard = [
-            [InlineKeyboardButton("Suggest Another Place", callback_data='place')],
             [InlineKeyboardButton("View Food Outlets", callback_data='view_food_outlets')],
+            [InlineKeyboardButton("Go Back to Main Menu", callback_data='start')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -54,19 +63,27 @@ def button_click(update: Update, context: CallbackContext) -> None:
         query.edit_message_text(text, reply_markup=reply_markup, parse_mode="html")
 
     elif query.data == 'view_food_outlets':
-        # Fetch the originally suggested place
+        # Fetch the originally suggested place.
         suggested_place = last_suggested_place[0]
 
         # TODO: Add logic to display the list of food outlets based on the suggested_place
-        # Example: Fetch a list of food outlets from a database or other source
+        # Example: Fetch a list of food outlets from the database.
 
-        # For demonstration purposes, let's create a sample list.
         food_outlets = ["Restaurant 1", "Restaurant 2", "Restaurant 3"]
 
         text = f"Food outlets at {suggested_place}:\n\n"
         text += "\n".join(food_outlets)
 
-        query.edit_message_text(text)
+        keyboard = [
+            [InlineKeyboardButton("Suggest Another Place", callback_data='place')],
+            [InlineKeyboardButton("Go Back to Main Menu", callback_data='start')],
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        query.edit_message_text(text, reply_markup=reply_markup, parse_mode="html")
+
+    elif query.data == 'start':
+        start(update, context)
 
 def main() -> None:
     updater = Updater(TOKEN, use_context=True)
