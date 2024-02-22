@@ -16,19 +16,19 @@ def start(update: Update, context: CallbackContext) -> None:
         query = update.callback_query
         keyboard = [
             [InlineKeyboardButton("Place Suggestion", callback_data='place')],
-            [InlineKeyboardButton("Food Suggestion", callback_data='-')],
-            [InlineKeyboardButton("Drink Suggestion", callback_data='-')],
+            [InlineKeyboardButton("Browse All Places", callback_data='-')],
+            [InlineKeyboardButton("Ask JohnnyGPT", callback_data='-')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        query.message.edit_text('What suggestion would you like to receive from Johnny today?', reply_markup=reply_markup)
+        query.message.edit_text('What would you like Johnny to assist you with?', reply_markup=reply_markup)
     else:
         keyboard = [
             [InlineKeyboardButton("Place Suggestion", callback_data='place')],
-            [InlineKeyboardButton("Food Suggestion", callback_data='-')],
-            [InlineKeyboardButton("Drink Suggestion", callback_data='-')],
+            [InlineKeyboardButton("Browse All Places", callback_data='-')],
+            [InlineKeyboardButton("Ask JohnnyGPT", callback_data='-')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        update.message.reply_text('What suggestion would you like to receive from Johnny today?', reply_markup=reply_markup)
+        update.message.reply_text('What would you like Johnny to assist you with?', reply_markup=reply_markup)
 
 def button_click(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
