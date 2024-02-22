@@ -25,7 +25,7 @@ def start(update: Update, context: CallbackContext) -> None:
         keyboard = [
             [InlineKeyboardButton("Place Suggestion", callback_data='place')],
             [InlineKeyboardButton("Browse All Places", callback_data='-')],
-            [InlineKeyboardButton("Ask JohnnyGPT", callback_data='-')],
+            [InlineKeyboardButton("JohnnyGPT", callback_data='-')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.message.reply_text('What would you like Johnny to assist you with?', reply_markup=reply_markup)
