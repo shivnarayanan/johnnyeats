@@ -15,11 +15,18 @@ DATABASE_URL = os.environ['DATABASE_URL']
 conn = psycopg2.connect(DATABASE_URL)
 cursor = conn.cursor()
 
+def remove_empty_cells(data):
+    data_remove_empty_values = [[cell for cell in row if cell.strip()] for row in data]
+    data_remove_empty_lists = [row for row in data_remove_empty_values if row]
+    
+    return data_remove_empty_lists
+
 def load_data_from_google_sheets(spreadsheet_id, worksheet_name, table_name):
     sheet = client.open_by_key(spreadsheet_id)
     worksheet = sheet.worksheet(worksheet_name)
 
     data = worksheet.get_all_values()
+    data = remove_empty_cells(data)
 
     drop_table_query = f"DROP TABLE IF EXISTS {table_name};"
     cursor.execute(drop_table_query)
@@ -37,7 +44,7 @@ def load_data_from_google_sheets(spreadsheet_id, worksheet_name, table_name):
     VALUES ({', '.join(['%s' for _ in range(len(data[0]))])});
     """
 
-    for row in data[1:]:  
+    for row in data[1:]:
         cursor.execute(insert_query, row)
     
     conn.commit()

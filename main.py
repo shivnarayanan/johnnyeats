@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler
 
+from src.database_utils import get_places, get_outlets
+
 load_dotenv(override=True)
 
 TOKEN = os.environ.get('BOT_TOKEN')
@@ -17,7 +19,7 @@ def start(update: Update, context: CallbackContext) -> None:
         keyboard = [
             [InlineKeyboardButton("Place Suggestion", callback_data='place')],
             [InlineKeyboardButton("Browse All Places", callback_data='-')],
-            [InlineKeyboardButton("Ask JohnnyGPT", callback_data='-')],
+            [InlineKeyboardButton("Provide Feedback", callback_data='-')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         query.message.edit_text('What would you like Johnny to assist you with?', reply_markup=reply_markup)
@@ -25,28 +27,22 @@ def start(update: Update, context: CallbackContext) -> None:
         keyboard = [
             [InlineKeyboardButton("Place Suggestion", callback_data='place')],
             [InlineKeyboardButton("Browse All Places", callback_data='-')],
-            [InlineKeyboardButton("JohnnyGPT", callback_data='-')],
+            [InlineKeyboardButton("Provide Feedback", callback_data='-')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.message.reply_text('What would you like Johnny to assist you with?', reply_markup=reply_markup)
 
+def escape_special_characters(message):
+    special_characters = r'\-`_{}[]()#+.!'
+    escaped_message = ''.join(['\\' + char if char in special_characters else char for char in message])
+    return escaped_message
+
 def button_click(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     query.answer()
-
-    if query.data == 'food':
-        food_suggestions = [
-            "Pizza",
-            "Burger",
-            "Sushi",
-            "Tacos",
-        ]
-
-        food = random.choice(food_suggestions)
-        query.edit_message_text(f"How about trying {food}?")
     
-    elif query.data == 'place':
-        place_suggestions = ["Marina One", "Food Garden", "Lau Pa Sat", "Hong Leong Bldg", "L2 Kopitiam"]
+    if query.data == 'place':
+        place_suggestions = get_places()
 
         place = random.choice([place for place in place_suggestions if place != last_suggested_place[0]])
 
@@ -54,25 +50,22 @@ def button_click(update: Update, context: CallbackContext) -> None:
 
         keyboard = [
             [InlineKeyboardButton("View Food Outlets", callback_data='view_food_outlets')],
+            [InlineKeyboardButton("Suggest Another Place", callback_data='place')],
             [InlineKeyboardButton("Go Back to Main Menu", callback_data='start')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
-        text = f"How about {place}?\n\nClick on <b>View Food Outlets</b> to see a list of food outlets at {place}."
+        text = f"Let's go *{place}*\!\n\nClick on View Food Outlets to see a list of food outlets at *{place}*\."
         
-        query.edit_message_text(text, reply_markup=reply_markup, parse_mode="html")
+        query.edit_message_text(text, reply_markup=reply_markup, parse_mode="MarkdownV2")
 
     elif query.data == 'view_food_outlets':
-        # Fetch the originally suggested place.
         suggested_place = last_suggested_place[0]
+        food_outlets = get_outlets(suggested_place)
 
-        # TODO: Add logic to display the list of food outlets based on the suggested_place
-        # Example: Fetch a list of food outlets from the database.
-
-        food_outlets = ["Restaurant 1", "Restaurant 2", "Restaurant 3"]
-
-        text = f"Food outlets at {suggested_place}:\n\n"
+        text = f"Food outlets at *{suggested_place}*:\n\n"
         text += "\n".join(food_outlets)
+        text = escape_special_characters(text)
 
         keyboard = [
             [InlineKeyboardButton("Suggest Another Place", callback_data='place')],
@@ -80,7 +73,7 @@ def button_click(update: Update, context: CallbackContext) -> None:
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
-        query.edit_message_text(text, reply_markup=reply_markup, parse_mode="html")
+        query.edit_message_text(text, reply_markup=reply_markup, parse_mode="MarkdownV2")
 
     elif query.data == 'start':
         start(update, context)
