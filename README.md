@@ -45,4 +45,4 @@ If you are interested in the deployment set-up, ask Shiv to add you as a collabo
 
 ## Task List
 
-Click here to view the list of pending tasks.
+Click here to view the [list](https://shivnarayanan.notion.site/shivnarayanan/JohnnyEats-dbb08e6410f04bb0a827891c3d517cba) of pending tasks.
