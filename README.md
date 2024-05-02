@@ -28,11 +28,9 @@ Follow these steps and set up your development environment:
     ```
 7. To test the bot, run `python3 main.py` and search for your bot on Telegram.
 
-## Food and Drinks Data
+## Database
 
-The bot retrieves data from a [Heroku Postgres](https://devcenter.heroku.com/articles/heroku-postgresql) database. 
-
-The database is updated daily by the **update.py** script, which runs on [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler). It retrieves data from [here](https://docs.google.com/spreadsheets/d/10KDw1cMOw4NaSXAJS8QObgpUnsfbWdj72ERZagWjoEs/edit#gid=1593634417).
+The bot fetches data from a Heroku Postgres database that is updated daily by the **update.py** script via the Heroku Scheduler. It sources this data from [here](https://docs.google.com/spreadsheets/d/10KDw1cMOw4NaSXAJS8QObgpUnsfbWdj72ERZagWjoEs/edit#gid=1593634417).
 
 ## Deployment
 
@@ -42,7 +40,3 @@ The staging and production bots are deployed on Heroku. Automated deployment is 
 - Merging into the **main** branch deploys changes into the **JohnnyEats** production bot.
 
 If you are interested in the deployment set-up, ask Shiv to add you as a collaborator to the application on Heroku.
-
-## Task List
-
-Click here to view the [list](https://shivnarayanan.notion.site/shivnarayanan/JohnnyEats-dbb08e6410f04bb0a827891c3d517cba) of pending tasks.
