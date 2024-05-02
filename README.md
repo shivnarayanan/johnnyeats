@@ -30,9 +30,7 @@ Follow these steps and set up your development environment:
 
 ## Database
 
-The bot retrieves data from a Heroku Postgres database. 
-
-The database is updated daily by the **update.py** script, which runs on Heroku Scheduler. It retrieves data from [here](https://docs.google.com/spreadsheets/d/10KDw1cMOw4NaSXAJS8QObgpUnsfbWdj72ERZagWjoEs/edit#gid=1593634417).
+The bot fetches data from a Heroku Postgres database that is updated daily by the **update.py** script via the Heroku Scheduler. It sources this data from [here](https://docs.google.com/spreadsheets/d/10KDw1cMOw4NaSXAJS8QObgpUnsfbWdj72ERZagWjoEs/edit#gid=1593634417).
 
 ## Deployment
 
