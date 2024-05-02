@@ -52,7 +52,7 @@ def capture_feedback(update: Update, context: CallbackContext) -> None:
         subject = update.message.text
         feedback_subject[user_id] = subject
 
-        text = "📝 Thank you! Now, please provide your detailed feedback: \n\nBe as descriptive as possible to help us understand your feedback better."  
+        text = "📝 Thank you! Now, please provide your detailed feedback. \n\nBe as descriptive as possible to help us understand your feedback better."  
         update.message.reply_text(text)
         context.user_data['awaiting_detailed_feedback'] = True
 
@@ -114,7 +114,7 @@ def button_click(update: Update, context: CallbackContext) -> None:
         query.edit_message_text(text, reply_markup=reply_markup, parse_mode="MarkdownV2")
 
     elif query.data == 'provide_feedback':
-        text = "📝 Please provide a subject/title for your feedback: \n\nFor example: _Inaccurate Eatery Information_"
+        text = "📝 Please provide a subject/title for your feedback. \n\nFor example: _Inaccurate Eatery Information_"
         keyboard = [
             [InlineKeyboardButton("Go Back to Main Menu", callback_data='start')]
         ]
@@ -122,7 +122,6 @@ def button_click(update: Update, context: CallbackContext) -> None:
 
         query.edit_message_text(escape_special_characters(text), reply_markup=reply_markup, parse_mode="MarkdownV2")
 
-        # Set a state to capture the feedback subject/title
         context.user_data['awaiting_feedback_subject'] = True
 
     elif query.data == 'start':

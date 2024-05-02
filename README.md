@@ -28,7 +28,7 @@ Follow these steps and set up your development environment:
     ```
 7. To test the bot, run `python3 main.py` and search for your bot on Telegram.
 
-## Food and Drinks Data
+## Database
 
 The bot retrieves data from a [Heroku Postgres](https://devcenter.heroku.com/articles/heroku-postgresql) database. 
 
