@@ -1,6 +1,7 @@
 import random
 import os
 
+import re
 from dotenv import load_dotenv
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler, MessageHandler, Filters
@@ -20,7 +21,7 @@ def start(update: Update, context: CallbackContext) -> None:
         query = update.callback_query
         keyboard = [
             [InlineKeyboardButton("Place Suggestion", callback_data='place')],
-            [InlineKeyboardButton("Browse All Places", callback_data='-')],
+            [InlineKeyboardButton("Browse All Places", callback_data='browse_all_places')],
             [InlineKeyboardButton("Provide Feedback", callback_data='provide_feedback')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -28,7 +29,7 @@ def start(update: Update, context: CallbackContext) -> None:
     else:
         keyboard = [
             [InlineKeyboardButton("Place Suggestion", callback_data='place')],
-            [InlineKeyboardButton("Browse All Places", callback_data='-')],
+            [InlineKeyboardButton("Browse All Places", callback_data='browse_all_places')],
             [InlineKeyboardButton("Provide Feedback", callback_data='provide_feedback')],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -67,13 +68,24 @@ def capture_feedback(update: Update, context: CallbackContext) -> None:
         
         create_issue(user_feedback['subject'], user_feedback['detailed_feedback'])
         
-        text = f"Thank you for your feedback, {username}! It has been noted and we will follow up. 😊"
+        text = f"Thank you for your feedback, {username}! It has been noted and we will follow up within 24h. 😊"
         update.message.reply_text(text, reply_markup=reply_markup)
 
         del context.user_data['awaiting_detailed_feedback']
     else:
         text = "What would you like Johnny to assist you with?"
         update.message.reply_text(escape_special_characters(text))
+
+def view_food_outlets(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+
+    place = query.data.split('_')[2]  # Extract place name from callback_data
+    food_outlets = get_outlets(place)
+
+    text = f"Food outlets at {place}:\n\n"
+    text += "\n".join(food_outlets)
+    query.edit_message_text(text)
 
 def button_click(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
@@ -124,6 +136,34 @@ def button_click(update: Update, context: CallbackContext) -> None:
 
         context.user_data['awaiting_feedback_subject'] = True
 
+    elif query.data == 'browse_all_places':
+        print("Browse all places button clicked")  
+        try:
+            places = get_places()
+            print("Places:", places) 
+            buttons = [[InlineKeyboardButton(place, callback_data=f'view_food_outlets_{place}')] for place in places]
+            keyboard = buttons + [[InlineKeyboardButton("Go Back to Main Menu", callback_data='start')]]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            query.edit_message_text("Choose a place:", reply_markup=reply_markup)
+        except Exception as e:
+            print("Error fetching places:", e)
+
+    elif re.match(r'^view_food_outlets_.*$', query.data):
+        requested_place = query.data.split('_')[-1]
+        food_outlets = get_outlets(requested_place)
+
+        text = f"Food outlets at *{requested_place}*:\n\n"
+        text += "\n".join(food_outlets)
+        text = escape_special_characters(text)
+
+        keyboard = [
+            [InlineKeyboardButton("Go Back to All Places", callback_data='browse_all_places')],
+            [InlineKeyboardButton("Go Back to Main Menu", callback_data='start')],
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        query.edit_message_text(text, reply_markup=reply_markup, parse_mode="MarkdownV2")
+    
     elif query.data == 'start':
         start(update, context)
 
